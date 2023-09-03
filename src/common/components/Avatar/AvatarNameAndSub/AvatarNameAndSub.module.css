@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: lighter;
+  font-size: 1rem;
+}
+
+.sub {
+  font-weight: lighter;
+  font-size: 0.6rem;
+}
