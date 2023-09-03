@@ -17,7 +17,7 @@ const Chat = ({ user }) => {
   const { chatRef, messages, addNewMessage } = useChat();
 
   useEffect(() => {
-    socket = io("http://localhost:2000");
+    socket = io("https://chat-basic-server-production.up.railway.app/");
 
     socket.on("connect", () => {
       console.log("Connected to server");
