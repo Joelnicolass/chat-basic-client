@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "./Chat.module.css";
 import ChatBubble from "../ChatBubble/ChatBubble";
@@ -8,6 +8,7 @@ import useChat from "../../hooks/useChat";
 import { getFormFields } from "../../../../common/utils/forms.utils";
 
 import { io } from "socket.io-client";
+import { getRandomArticle } from "../../../../common/services/wikipedia.services";
 
 // socket impl
 
@@ -49,20 +50,47 @@ const Chat = ({ user }) => {
     };
   }, []);
 
+  const [discussion, setDiscussion] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setDiscussion("");
+      try {
+        const discussion = await getRandomArticle();
+        setDiscussion(discussion);
+      } catch (error) {
+        console.log(error);
+        setDiscussion("");
+      }
+    };
+
+    fetchData();
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 60000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div className={styles["chat-container"]}>
       <div>
-        <marquee direction="left">
-          <span
-            style={{
-              color: "white",
-              fontSize: "1rem",
-              fontWeight: "Lighter",
-            }}
-          >
-            ROOM: {user.room} - USER: {user.name}
-          </span>
-        </marquee>
+        {discussion && (
+          <marquee direction="left">
+            <span
+              style={{
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "Lighter",
+              }}
+            >
+              Puedes hablar de {discussion?.title} - {discussion?.extract}
+            </span>
+          </marquee>
+        )}
       </div>
 
       <div ref={chatRef} className={styles["chat"]}>
